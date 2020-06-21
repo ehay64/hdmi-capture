@@ -59,3 +59,23 @@ Timing information can then be set with:
 ```
 v4l2-ctl --set-dv-bt-timings query
 ```
+
+## FFMPEG:
+ffmpeg can be used to receive data from the HDMI to CSI bridge.
+
+The following command can be used to view the available formats:
+```
+ffmpeg -f v4l2 -list_formats all -i /dev/video0
+```
+
+The following command can be used to record raw uyvy422 frames:
+```
+ffmpeg -f v4l2 -input_format uyvy422 -i /dev/video0 -c:v copy test.mkv
+```
+**Note:** The above command requires a tremendous amount of disk bandwidth to record without dropping frames.
+
+## µStreamer:
+[µStreamer](https://github.com/pikvm/ustreamer) works really well with this setup. It's nearly plug and play. The following command will start the streaming server at port 8080:
+```
+./ustreamer --format=UYVY --encoder=omx --workers=3 --dv-timings --drop-same-frames=30 --host=0.0.0.0
+```
