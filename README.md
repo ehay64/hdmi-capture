@@ -33,11 +33,6 @@ dtoverlay=tc358743
 gpu_mem=256
 ```
 
-The following command can be used to return status information from v4l2:
-```
-v4l2-ctl --log-status
-```
-
 ## Sound:
 The Toshiba IC does have the ability to receive sound from the HDMI source, and the I2S pins are broken out on the board, but there is evidence to suggest that it does not work properly with the Raspberry Pi. A `tc358743-audio.dtbo` overlay does exist though.
 
@@ -50,6 +45,11 @@ v4l2-ctl --set-edid=file=1080P50EDID.txt --fix-edid-checksums
 ```
 
 ## Misc Commands:
+The following command can be used to return status information from v4l2:
+```
+v4l2-ctl --log-status
+```
+
 When the HDMI link is established, timing information can be checked with:
 ```
 v4l2-ctl --query-dv-timings
