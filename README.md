@@ -41,7 +41,7 @@ The EDID is a block of data that the HDMI sink presents to the HDMI source. It l
 
 The EDID can be set with the following command:
 ```
-v4l2-ctl --set-edid=file=1080P50EDID.txt --fix-edid-checksums
+v4l2-ctl --set-edid=file=1080P30EDID422.txt --fix-edid-checksums
 ```
 
 ## Misc Commands:
@@ -80,5 +80,17 @@ ffmpeg -f v4l2 -input_format uyvy422 -i /dev/video0 -c:v copy test.mkv
 ./ustreamer --format=UYVY --encoder=omx --workers=3 --dv-timings --drop-same-frames=30 --host=0.0.0.0
 ```
 
+## GStreamer:
+GStreamer can be used to efficiently encode the output of the bridge and piped elsewhere. The following command can be used on the Raspberry Pi to setup a TCP socket that presents an encoded h264 stream:
+```
+gst-launch-1.0 -vvv -e v4l2src ! video/x-raw,format=UYVY,framerate=60/1 ! v4l2h264enc ! h264parse ! rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=0.0.0.0 port=5000
+```
+**Note:** The above command requires the good and bad GStreamer plugins.
+
+The command on the receiving end can be something like:
+```
+gst-launch-1.0 -v tcpclientsrc host=<IP Address> port=5000 ! gdpdepay ! rtph264depay ! decodebin ! videoconvert ! autovideosink sync=false
+```
+
 ## raspivid:
-`raspivid` can be used to receive video from the bridge, but the TC358749XBG is not officially supported. In order to use `raspivid`, the v4l2 driver needs to be disabled (remove `dtoverlay=tc358743` from `/boot/config.txt`). The advantage to using `raspivid` is that it makes use of the MMAL API to encode the video as a h264 stream. The downside is that it automatically sets the EDID.
+`raspivid` can be used to receive video from the bridge, but the TC358749XBG is not officially supported. In order to use `raspivid`, the v4l2 driver needs to be disabled (remove `dtoverlay=tc358743` from `/boot/config.txt`). The advantage to using `raspivid` is that it makes use of the MMAL API to encode the video as a h264 stream. The downside is that it automatically sets the EDID. This is an issue when the HDMI source does not have a manual override for its output settings.
