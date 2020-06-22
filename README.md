@@ -60,8 +60,8 @@ Timing information can then be set with:
 v4l2-ctl --set-dv-bt-timings query
 ```
 
-## FFMPEG:
-ffmpeg can be used to receive data from the HDMI to CSI bridge.
+## ffmpeg:
+`ffmpeg` can be used to receive data from the HDMI to CSI bridge.
 
 The following command can be used to view the available formats:
 ```
@@ -79,3 +79,6 @@ ffmpeg -f v4l2 -input_format uyvy422 -i /dev/video0 -c:v copy test.mkv
 ```
 ./ustreamer --format=UYVY --encoder=omx --workers=3 --dv-timings --drop-same-frames=30 --host=0.0.0.0
 ```
+
+## raspivid:
+`raspivid` can be used to receive video from the bridge, but the TC358749XBG is not officially supported. In order to use `raspivid`, the v4l2 driver needs to be disabled (remove `dtoverlay=tc358743` from `/boot/config.txt`). The advantage to using `raspivid` is that it makes use of the MMAL API to encode the video as a h264 stream. The downside is that it automatically sets the EDID.
