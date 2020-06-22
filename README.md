@@ -85,11 +85,16 @@ GStreamer can be used to efficiently encode the output of the bridge and piped e
 ```
 gst-launch-1.0 -vvv -e v4l2src ! video/x-raw,format=UYVY,framerate=60/1 ! v4l2h264enc ! h264parse ! rtph264pay config-interval=1 pt=96 ! gdppay ! tcpserversink host=0.0.0.0 port=5000
 ```
-**Note:** The above command requires the good and bad GStreamer plugins.
+**Note:** The above command requires the good and bad GStreamer plugins. Also, the bitrate can be controlled by adding `extra-controls="encode,video_bitrate=5000000;"` to the `v4l2h264enc` option.
 
 The command on the receiving end can be something like:
 ```
 gst-launch-1.0 -v tcpclientsrc host=<IP Address> port=5000 ! gdpdepay ! rtph264depay ! decodebin ! videoconvert ! autovideosink sync=false
+```
+
+GStreamer can also save the video directly to a file:
+```
+gst-launch-1.0 -e v4l2src ! video/x-raw,format=UYVY,framerate=60/1 ! v4l2h264enc ! h264parse ! filesink location=test.mkv
 ```
 
 ## raspivid:
