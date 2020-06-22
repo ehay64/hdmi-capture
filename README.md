@@ -60,6 +60,12 @@ Timing information can then be set with:
 v4l2-ctl --set-dv-bt-timings query
 ```
 
+Possible timings can be checked and manually set with:
+```
+v4l2-ctl --list-dv-timings
+v4l2-ctl --set-dv-bt-timings index=<index>
+```
+
 ## ffmpeg:
 `ffmpeg` can be used to receive data from the HDMI to CSI bridge.
 
