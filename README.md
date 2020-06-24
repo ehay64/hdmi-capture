@@ -105,3 +105,9 @@ gst-launch-1.0 -e v4l2src ! video/x-raw,format=UYVY,framerate=60/1 ! v4l2h264enc
 
 ## raspivid:
 `raspivid` can be used to receive video from the bridge, but the TC358749XBG is not officially supported. In order to use `raspivid`, the v4l2 driver needs to be disabled (remove `dtoverlay=tc358743` from `/boot/config.txt`). The advantage to using `raspivid` is that it makes use of the MMAL API to encode the video as a h264 stream. The downside is that it automatically sets the EDID. This is an issue when the HDMI source does not have a manual override for its output settings.
+
+## References:
+1. https://github.com/mzyy94/ns-remote
+    * A cool project that aims to create a mobile VNC type system for the Nintendo Switch.
+1. https://www.raspberrypi.org/forums/viewtopic.php?t=120702
+    * A humongous mega thread about this and other boards based on the TC358749XBG.
