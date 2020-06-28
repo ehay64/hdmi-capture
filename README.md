@@ -103,6 +103,16 @@ GStreamer can also save the video directly to a file:
 gst-launch-1.0 -e v4l2src ! video/x-raw,format=UYVY,framerate=60/1 ! v4l2h264enc ! h264parse ! filesink location=test.mkv
 ```
 
+Uncompressed video can also be transmitted to a host on the network:
+```
+gst-launch-1.0 -e v4l2src ! video/x-raw,format=UYVY,framerate=60/1 ! rtpvrawpay ! udpsink host=<ip address> port=5000
+```
+
+And received with:
+```
+gst-launch-1.0 udpsrc port="5000" caps="application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)YCbCr-4:2:2, depth=(string)8, width=(string)1280, height=(string)720, colorimetry=(string)BT601-5, payload=(int)96, ssrc=(uint)1103043224, timestamp-offset=(uint)1948293153, seqnum-offset=(uint)27904" ! rtpvrawdepay ! videoconvert ! queue ! xvimagesink sync=false
+```
+
 ## raspivid:
 `raspivid` can be used to receive video from the bridge, but the TC358749XBG is not officially supported. In order to use `raspivid`, the v4l2 driver needs to be disabled (remove `dtoverlay=tc358743` from `/boot/config.txt`). The advantage to using `raspivid` is that it makes use of the MMAL API to encode the video as a h264 stream. The downside is that it automatically sets the EDID. This is an issue when the HDMI source does not have a manual override for its output settings.
 
